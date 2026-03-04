@@ -44,7 +44,7 @@ export function Hero() {
   return (
     <section id="about" className="min-h-screen flex items-center pt-20">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center gap-12">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-12">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
