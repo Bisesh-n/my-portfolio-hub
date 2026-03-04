@@ -1,4 +1,4 @@
-import { Github, Linkedin, Heart } from "lucide-react";
+import { Github, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function Footer() {
@@ -30,8 +30,8 @@ export function Footer() {
             </a>
           </div>
 
-          <p className="text-sm text-muted-foreground flex items-center gap-1">
-            Made with <Heart size={14} className="text-destructive" /> by Bishesh Nakarmi
+          <p className="text-sm text-muted-foreground">
+            Made by Bishesh Nakarmi
           </p>
 
           <p className="text-xs text-muted-foreground">
