@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 // Basic English word check - at least 80% of words should match common patterns
 const isLikelyEnglish = (text: string): boolean => {
@@ -71,12 +72,31 @@ export function Contact() {
     }
 
     setSending(true);
-    // TODO: Save to Supabase + send email via edge function once connected
-    setTimeout(() => {
-      toast.success("Message sent! (Supabase not connected yet)");
+    try {
+      // Save to Supabase
+      const { error } = await supabase
+        .from("messages" as any)
+        .insert([{ name: name.trim(), email: email.trim(), message: message.trim() }]);
+
+      if (error) throw error;
+
+      // Send email notification
+      const { error: fnError } = await supabase.functions.invoke("send-contact-email", {
+        body: { name: name.trim(), email: email.trim(), message: message.trim() },
+      });
+
+      if (fnError) {
+        console.warn("Email notification failed, but message was saved:", fnError);
+      }
+
+      toast.success("Message sent successfully!");
       setForm({ name: "", email: "", message: "" });
+    } catch (err: any) {
+      console.error("Error sending message:", err);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
       setSending(false);
-    }, 1000);
+    }
   };
 
   return (

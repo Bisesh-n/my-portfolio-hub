@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export function ResumeSection() {
   const [uploading, setUploading] = useState(false);
@@ -23,11 +24,20 @@ export function ResumeSection() {
     }
 
     setUploading(true);
-    // TODO: Upload to Supabase Storage once connected
-    setTimeout(() => {
-      toast.success("Resume uploaded successfully! (Supabase not connected yet)");
+    try {
+      const fileName = `${Date.now()}_${file.name}`;
+      const { error } = await supabase.storage
+        .from("resumes")
+        .upload(fileName, file, { contentType: "application/pdf" });
+
+      if (error) throw error;
+      toast.success("Resume uploaded successfully!");
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      toast.error("Failed to upload resume. Please try again.");
+    } finally {
       setUploading(false);
-    }, 1000);
+    }
   };
 
   return (
