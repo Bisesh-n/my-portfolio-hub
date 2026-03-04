@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { LogOut, Mail, FileText, Settings } from "lucide-react";
+import { LogOut, Mail, FileText, Settings, User, Briefcase, Zap } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AboutEditor } from "@/components/admin/AboutEditor";
+import { TimelineEditor } from "@/components/admin/TimelineEditor";
+import { SkillsEditor } from "@/components/admin/SkillsEditor";
 import type { Session } from "@supabase/supabase-js";
 
 export default function Admin() {
@@ -73,15 +76,19 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="messages">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap h-auto gap-1">
             <TabsTrigger value="messages" className="gap-2"><Mail size={14} /> Messages</TabsTrigger>
             <TabsTrigger value="resumes" className="gap-2"><FileText size={14} /> Resumes</TabsTrigger>
-            <TabsTrigger value="content" className="gap-2"><Settings size={14} /> Content</TabsTrigger>
+            <TabsTrigger value="about" className="gap-2"><User size={14} /> About</TabsTrigger>
+            <TabsTrigger value="timeline" className="gap-2"><Briefcase size={14} /> Experience & Education</TabsTrigger>
+            <TabsTrigger value="skills" className="gap-2"><Zap size={14} /> Skills</TabsTrigger>
           </TabsList>
 
           <TabsContent value="messages"><MessagesTab /></TabsContent>
           <TabsContent value="resumes"><ResumesTab /></TabsContent>
-          <TabsContent value="content"><ContentTab /></TabsContent>
+          <TabsContent value="about"><AboutEditor /></TabsContent>
+          <TabsContent value="timeline"><TimelineEditor /></TabsContent>
+          <TabsContent value="skills"><SkillsEditor /></TabsContent>
         </Tabs>
       </div>
     </div>
@@ -179,44 +186,3 @@ function ResumesTab() {
   );
 }
 
-function ContentTab() {
-  const [content, setContent] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.from("site_content" as any).select("*").order("section");
-      if (error) toast.error("Failed to load content");
-      else setContent((data as any[]) || []);
-      setLoading(false);
-    })();
-  }, []);
-
-  if (loading) return <p className="text-muted-foreground">Loading content...</p>;
-  if (!content.length) return <p className="text-muted-foreground">No editable content yet. Content entries will appear here once added.</p>;
-
-  return (
-    <div className="glass rounded-xl overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Section</TableHead>
-            <TableHead>Key</TableHead>
-            <TableHead>Value</TableHead>
-            <TableHead>Updated</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {content.map((c: any) => (
-            <TableRow key={c.id}>
-              <TableCell className="font-medium">{c.section}</TableCell>
-              <TableCell>{c.key}</TableCell>
-              <TableCell className="max-w-xs truncate">{JSON.stringify(c.value)}</TableCell>
-              <TableCell className="text-muted-foreground text-sm">{new Date(c.updated_at).toLocaleDateString()}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  );
-}
