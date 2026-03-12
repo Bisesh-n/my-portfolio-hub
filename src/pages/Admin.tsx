@@ -77,7 +77,7 @@ export default function Admin() {
 
         <Tabs defaultValue="messages">
           <TabsList className="mb-6 flex-wrap h-auto gap-1">
-            <TabsTrigger value="messages" className="gap-2"><Mail size={14} /> Messages</TabsTrigger>
+            <TabsTrigger value="messages" className="gap-2"><Mail size={14} /> Messages </TabsTrigger>
             <TabsTrigger value="resumes" className="gap-2"><FileText size={14} /> Resumes</TabsTrigger>
             <TabsTrigger value="about" className="gap-2"><User size={14} /> About</TabsTrigger>
             <TabsTrigger value="timeline" className="gap-2"><Briefcase size={14} /> Experience & Education</TabsTrigger>
